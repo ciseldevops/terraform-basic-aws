@@ -18,17 +18,42 @@ variable "private_subnet_cidr" {
   default = "11.0.2.0/24"
 }
 
+variable "default_cidr_blocks"{
+  description = "CIDR for default subnet"
+  default = "0.0.0.0/0"
+}
+
 variable "availability_zone_skate_1" {
   description = "Availability zone 1"
   default = "eu-west-2c"
 }
 
+variable "http_port" {
+  description = "Port HTTP"
+  default = "80"
+}
+
+variable "https_port" {
+  description = "Port HTTPS"
+  default = "443"
+}
+
+variable "ssh_port" {
+  description = "Port SSH"
+  default = "22"
+}
+
+variable "mysql_port" {
+  description = "Port MySQL"
+  default = "3306"
+}
+
 #variable "ami" {
-#  description = "AMI for EC2"
+#  description = "AMI Public Windows for EC2"
 #  default = "ami-4fffc834"
 #}
 
 #variable "key_path" {
 #  description = "SSH Public Key path"
-#  default = "/home/core/.ssh/id_rsa.pub"
+#  default = "/path/to/key/id_rsa.pub"
 #}

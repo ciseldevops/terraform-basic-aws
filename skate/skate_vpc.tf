@@ -44,7 +44,7 @@ resource "aws_route_table" "web-public-rt" {
   vpc_id = "${aws_vpc.skate-vpc.id}"
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = "${var.default_cidr_blocks}"
     gateway_id = "${aws_internet_gateway.igw-skate.id}"
   }
 
@@ -65,31 +65,31 @@ resource "aws_security_group" "sgweb" {
   description = "Allow incoming HTTP connections & SSH access"
 
   ingress {
-    from_port = 80
-    to_port = 80
+    from_port = "${var.http_port}"
+    to_port = "${var.http_port}"
     protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.default_cidr_blocks}"]
   }
 
   ingress {
-    from_port = 443
-    to_port = 443
+    from_port = "${var.https_port}"
+    to_port = "${var.https_port}"
     protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.default_cidr_blocks}"]
   }
 
   ingress {
     from_port = -1
     to_port = -1
     protocol = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.default_cidr_blocks}"]
   }
 
   ingress {
-    from_port = 22
-    to_port = 22
+    from_port = "${var.ssh_port}"
+    to_port = "${var.ssh_port}"
     protocol = "tcp"
-    cidr_blocks =  ["0.0.0.0/0"]
+    cidr_blocks =  ["${var.default_cidr_blocks}"]
   }
 
   vpc_id="${aws_vpc.skate-vpc.id}"
@@ -105,8 +105,8 @@ resource "aws_security_group" "sgdb"{
   description = "Allow traffic from public subnet"
 
   ingress {
-    from_port = 3306
-    to_port = 3306
+    from_port = "${var.mysql_port}"
+    to_port = "${var.mysql_port}"
     protocol = "tcp"
     cidr_blocks = ["${var.public_subnet_cidr}"]
   }
@@ -119,8 +119,8 @@ resource "aws_security_group" "sgdb"{
   }
 
   ingress {
-    from_port = 22
-    to_port = 22
+    from_port = "${var.ssh_port}"
+    to_port = "${var.ssh_port}"
     protocol = "tcp"
     cidr_blocks = ["${var.public_subnet_cidr}"]
   }
