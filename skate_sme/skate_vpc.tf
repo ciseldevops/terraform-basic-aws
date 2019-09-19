@@ -44,74 +44,60 @@ module "vpc" {
 module "sg_web" {
   source = "terraform-aws-modules/security-group/aws"
   name = "sg_skate_web_sg"
-  description = "Allow incoming HTTP connections & SSH access"
-
-  ingress {
-    from_port = "${var.http_port}"
-    to_port = "${var.http_port}"
-    protocol = "tcp"
-    cidr_blocks = ["${var.default_cidr_blocks}"]
-  }
-
-  ingress {
-    from_port = "${var.https_port}"
-    to_port = "${var.https_port}"
-    protocol = "tcp"
-    cidr_blocks = ["${var.default_cidr_blocks}"]
-  }
-
-  ingress {
-    from_port = -1
-    to_port = -1
-    protocol = "icmp"
-    cidr_blocks = ["${var.default_cidr_blocks}"]
-  }
-
-  ingress {
-    from_port = "${var.ssh_port}"
-    to_port = "${var.ssh_port}"
-    protocol = "tcp"
-    cidr_blocks =  ["${var.default_cidr_blocks}"]
-  }
-
+  description = "Allow incoming HTTP connections and SSH access"
   vpc_id="${aws_vpc.skate-vpc.id}"
 
-  tags = {
-    Name = "Skate Web Server SG"
-  }
+  ingress_cidr_blocks      = ["${var.default_cidr_blocks}"]
+  ingress_rules            = ["https-443-tcp"]
+  ingress_with_cidr_blocks = [
+    {
+      from_port = "${var.http_port}"
+      to_port = "${var.http_port}"
+      protocol = "tcp"
+      description = "User-service ports"
+    },
+    {
+      from_port = "${var.https_port}"
+      to_port = "${var.https_port}"
+      protocol = "tcp"
+    },
+    {
+      from_port = -1
+      to_port = -1
+      protocol = "icmp"
+    },
+    {
+      from_port = "${var.ssh_port}"
+      to_port = "${var.ssh_port}"
+      protocol = "tcp"
+    }
+  ]
 }
 
 # Define the security group for private subnet
 module "sg_db" {
   source = "terraform-aws-modules/security-group/aws"
-
   name = "sg_skate_db_sg"
   description = "Allow traffic from public subnet"
-
-  ingress {
-    from_port = "${var.mysql_port}"
-    to_port = "${var.mysql_port}"
-    protocol = "tcp"
-    cidr_blocks = ["${var.public_subnet_cidr}"]
-  }
-
-  ingress {
-    from_port = -1
-    to_port = -1
-    protocol = "icmp"
-    cidr_blocks = ["${var.public_subnet_cidr}"]
-  }
-
-  ingress {
-    from_port = "${var.ssh_port}"
-    to_port = "${var.ssh_port}"
-    protocol = "tcp"
-    cidr_blocks = ["${var.public_subnet_cidr}"]
-  }
-
   vpc_id = "${aws_vpc.skate-vpc.id}"
 
-  tags = {
-    Name = "Skate DB SG"
-  }
+  ingress_cidr_blocks      = ["${var.default_cidr_blocks}"]
+  ingress_rules            = ["https-443-tcp"]
+  ingress_with_cidr_blocks = [
+    {
+      from_port = "${var.mysql_port}"
+      to_port = "${var.mysql_port}"
+      protocol = "tcp"
+    },
+    {
+      from_port = -1
+      to_port = -1
+      protocol = "icmp"
+    },
+    {
+      from_port = "${var.ssh_port}"
+      to_port = "${var.ssh_port}"
+      protocol = "tcp"
+    }
+  ]
 }
