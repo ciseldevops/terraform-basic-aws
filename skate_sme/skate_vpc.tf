@@ -45,7 +45,7 @@ module "sg_web" {
   source = "terraform-aws-modules/security-group/aws"
   name = "sg_skate_web_sg"
   description = "Allow incoming HTTP connections and SSH access"
-  vpc_id= module.vpc.vpc_id
+  vpc_id= "${module.vpc.vpc_id}"
 
   ingress_cidr_blocks      = ["${var.default_cidr_blocks}"]
   ingress_rules            = ["https-443-tcp"]
@@ -79,7 +79,7 @@ module "sg_db" {
   source = "terraform-aws-modules/security-group/aws"
   name = "sg_skate_db_sg"
   description = "Allow traffic from public subnet"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = "${module.vpc.vpc_id}"
 
   ingress_cidr_blocks      = ["${var.default_cidr_blocks}"]
   ingress_rules            = ["https-443-tcp"]
